@@ -28,6 +28,14 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    isVerified: {
+        type: Boolean,
+        required: true
+    },
+    isDeleted: {
+        type: Boolean,
+        required: true
+    },
     role: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Role'  
