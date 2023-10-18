@@ -106,6 +106,19 @@ const forgetPassword = async (req, res) => {
     }
 }
 
+const resetPassword = async (req, res) => {
+    const {password} = req.body
+
+    try {
+        const user = User.({password})
+        await user.save()
+        res.status(201).json({ message: 'Password reset successfully.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+}
+
 
 
 module.exports = {
@@ -113,5 +126,6 @@ module.exports = {
     login,
     emailVerification,
     logout,
-    forgetPassword
+    forgetPassword,
+    resetPassword
 };
