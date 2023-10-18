@@ -2,6 +2,7 @@ const User = require('../models/user')
 const mongoose = require("mongoose")
 const roleId = "652e4b682547cf7e2afe4045"
 const {jwtToken} = require('../utils/jwtToken')
+const cookie = require("cookie-parser")
 
 const sendEmail = require("../utils/sendEmail")
 
@@ -45,6 +46,8 @@ const login = async(req, res) => {
             const verificationLink = `${process.env.BASE_URL}/api/auth/verify/${verificationToken}`;
             await sendEmail.sendEmail(user.email, "Email Verification", verificationLink);
             res.json({ message : "please check your email "})
+        }else{
+            res.status(201).json({ message: 'User logedin successfully.' });
         }
 
         }else{
@@ -75,8 +78,16 @@ const emailVerification = async(req, res) => {
     }
 }
 
+const logout = async(req, res) => {
+    res.clearCookie('jwtToken'); 
+    res.json({ message: 'Logged out successfully' });
+}
+
+
+
 module.exports = {
     register,
     login,
-    emailVerification
+    emailVerification,
+    logout
 };
