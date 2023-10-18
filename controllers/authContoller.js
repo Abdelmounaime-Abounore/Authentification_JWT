@@ -1,6 +1,8 @@
 const User = require('../models/user');
 const mongoose = require("mongoose")
 const roleId = "652e4b682547cf7e2afe4045";
+const jwt = require('../utils/jwtToken')
+const sendEmail = require('../utils/sendEmail')
 
 const register = async (req, res) => {
     try {
