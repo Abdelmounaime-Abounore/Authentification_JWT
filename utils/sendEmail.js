@@ -19,7 +19,7 @@ const sendEmail = async(email, subject, link) => {
         </head>
         <body>
             <div>
-                <h2>Email Verification</h2>
+                <h2>"${subject}"</h2>
                 <p><a href="${link}">Verify your email</a></p>
             </div>
         </body>

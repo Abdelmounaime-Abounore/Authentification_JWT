@@ -4,9 +4,7 @@ class jwtToken{
 
     static generate(id , duration ){
 
-        return jwt.sign({ id }, process.env.JWT_SECRET, {
-            expiresIn: duration ,
-        })
+        return jwt.sign({ id }, process.env.JWT_SECRET, {expiresIn: duration})
     }
 
     static verify(token, secret) {

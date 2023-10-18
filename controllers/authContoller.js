@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 const roleId = "652e4b682547cf7e2afe4045"
 const {jwtToken} = require('../utils/jwtToken')
 const cookie = require("cookie-parser")
-
+const jwt = require ('jsonwebtoken')
 const sendEmail = require("../utils/sendEmail")
 
 const register = async (req, res) => {
@@ -83,11 +83,35 @@ const logout = async(req, res) => {
     res.json({ message: 'Logged out successfully' });
 }
 
+const forgetPassword = async (req, res) => {
+    const {email} = req.body
+
+    try {
+        const user = await User.findOne({email})
+        if(!user){
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        const resetToken = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '10m'})
+
+        const resetLink = `${process.env.BASE_URL}/api/auth/reset-password/${resetToken}`;
+        await sendEmail.sendEmail(user.email, 'Password Reset', resetLink);
+
+        res.json({ message: 'Password reset link sent successfully.' });
+
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+}
+
 
 
 module.exports = {
     register,
     login,
     emailVerification,
-    logout
+    logout,
+    forgetPassword
 };
