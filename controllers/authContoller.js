@@ -1,7 +1,7 @@
 const User = require('../models/user')
 const mongoose = require("mongoose")
 const roleId = "652e4b682547cf7e2afe4045"
-const jwt = require('../utils/jwtToken')
+const {jwtToken} = require('../utils/jwtToken')
 
 const sendEmail = require("../utils/sendEmail")
 
@@ -39,10 +39,10 @@ const login = async(req, res) => {
 
     if(user && password == user.password)
     {
-        const verificationToken = jwt.jwtToken.generate(user._id , '10m')
+        const verificationToken = jwtToken.generate(user._id , '10m')
 
         if(!user.isVerified){
-            const verificationLink = `${process.env.BASE_URL}/api/auth/users/verify/${verificationToken}`;
+            const verificationLink = `${process.env.BASE_URL}/api/auth/verify/${verificationToken}`;
             await sendEmail.sendEmail(user.email, "Email Verification", verificationLink);
             res.json({ message : "please check your email "})
         }
@@ -56,10 +56,9 @@ const emailVerification = async(req, res) => {
     const { token } = req.params;
 
     try {
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
+        const decodedToken = jwtToken.verify(token, process.env.JWT_SECRET)
 
         if (decodedToken.id) {
-            // Find user and mark as verified
             const user = await User.findById(decodedToken.id);
 
             if (user) {
