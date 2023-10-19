@@ -73,8 +73,9 @@ const emailVerification = async(req, res) => {
         return res.status(400).json({ message: 'Invalid token for email verification.' });
 
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Internal server error.' });
+        if(error.name == "TokenExpiredError"){
+            res.status(500).json({ message: 'Your Token is Expired.' });
+        }
     }
 }
 
