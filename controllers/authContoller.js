@@ -2,7 +2,7 @@ const User = require('../models/user')
 const mongoose = require("mongoose")
 const roleId = "652e4b682547cf7e2afe4045"
 const {jwtToken} = require('../utils/jwtToken')
-const cookie = require("cookie-parser")
+const cookie = require('cookie-parser');
 const jwt = require ('jsonwebtoken')
 const sendEmail = require("../utils/sendEmail")
 
@@ -47,6 +47,7 @@ const login = async(req, res) => {
             await sendEmail.sendEmail(user.email, "Email Verification", verificationLink);
             res.json({ message : "please check your email "})
         }else{
+            res.cookie('jwtToken', verificationToken, { exp: "10m" });
             res.status(201).json({ message: 'User logedin successfully.' });
         }
 
@@ -129,6 +130,41 @@ const resetPassword = async (req, res) => {
     }
 }
 
+const editPassword = async (req, res) => {
+
+    try {
+
+        console.log(req.cookie)
+
+        const token = req.cookie.jwtToken;
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
+
+        if (!decodedToken.id) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        const user = await User.findById(decodedToken.id)
+
+        if (req.user.email !== req.body.email) {
+            return res.status(400).json({ message: 'Invalid email.' });
+        }
+
+        isMatch = await user.comparePassword(req.body.oldPassword);
+
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid old password.' });
+        }
+
+        user.password = req.body.newPassword;
+        await user.save();
+
+        res.status(200).json({ message: 'Password updated successfully.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+};
+
 
 
 module.exports = {
@@ -137,5 +173,6 @@ module.exports = {
     emailVerification,
     logout,
     forgetPassword,
-    resetPassword
+    resetPassword,
+    editPassword
 };
