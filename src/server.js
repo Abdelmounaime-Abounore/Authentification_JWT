@@ -2,7 +2,7 @@ const express = require("express")
 const dotenv = require("dotenv")
 const db = require("../config/db.js")
 const authRoutes = require("./routes/authRoutes")
-const cookieParser = require("cookie-parser")
+const cookieParser = require('cookie-parser')
 
 const app = express()
 

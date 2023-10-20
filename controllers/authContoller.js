@@ -133,9 +133,6 @@ const resetPassword = async (req, res) => {
 const editPassword = async (req, res) => {
 
     try {
-
-        console.log(req.cookies.jwtToken);
-
         const token = req.cookies.jwtToken;
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
 
@@ -145,17 +142,15 @@ const editPassword = async (req, res) => {
 
         const user = await User.findById(decodedToken.id)
 
-        if (req.user.email !== req.body.email) {
+        if (user.email !== req.body.email) {
             return res.status(400).json({ message: 'Invalid email.' });
         }
 
-        isMatch = await user.comparePassword(req.body.oldPassword);
-
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid old password.' });
+        if (user.password != req.body.oldPassword) {
+            return res.status(400).json({ message: 'Invalid password.' });
         }
 
-        user.password = req.body.newPassword;
+        user.password = req.body.password;
         await user.save();
 
         res.status(200).json({ message: 'Password updated successfully.' });
@@ -164,8 +159,6 @@ const editPassword = async (req, res) => {
         res.status(500).json({ message: 'Internal server error.' });
     }
 };
-
-
 
 module.exports = {
     register,
