@@ -134,9 +134,9 @@ const editPassword = async (req, res) => {
 
     try {
 
-        console.log(req.cookie)
+        console.log(req.cookies.jwtToken);
 
-        const token = req.cookie.jwtToken;
+        const token = req.cookies.jwtToken;
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
 
         if (!decodedToken.id) {
