@@ -1,4 +1,5 @@
 const User = require('../models/user')
+const Role = require('../models/role')
 const mongoose = require("mongoose")
 const roleId = "652e4b682547cf7e2afe4045"
 const {jwtToken} = require('../utils/jwtToken')
@@ -8,7 +9,12 @@ const sendEmail = require("../utils/sendEmail")
 
 const register = async (req, res) => {
     try {
-        const { name, email, password, phoneNumber, address, image, role } = req.body;
+        const { name, email, password, phoneNumber, address, image, roleName } = req.body;
+
+        const role = await Role.findOne({name: roleName})
+        if(!role){
+            return res.status(400).json({ message: 'Invalid role.' });
+        }
 
         const newUser = new User({
             name,
@@ -19,7 +25,7 @@ const register = async (req, res) => {
             image,
             isVerified: false,
             isDeleted: false,
-            role: new mongoose.Types.ObjectId(roleId)
+            role: role._id
         });
 
 
