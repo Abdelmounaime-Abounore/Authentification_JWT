@@ -42,7 +42,7 @@ const login = async(req, res) => {
 
     const {email , password} = req.body;
 
-    const user = await User.findOne({email})
+    const user = await User.findOne({email}).populate('role')
 
     if(user && password == user.password)
     {
@@ -52,14 +52,17 @@ const login = async(req, res) => {
             const verificationLink = `${process.env.BASE_URL}/api/auth/verify/${verificationToken}`;
             await sendEmail.sendEmail(user.email, "Email Verification", verificationLink);
             res.json({ message : "please check your email "})
-        }else{
-            res.cookie('jwtToken', verificationToken, { exp: "10m" });
-            res.status(201).json({ message: 'User logedin successfully.' });
         }
 
-        }else{
-            res.status(401).json({ message: 'Info Invalide' });
-        }
+        res.cookie('jwtToken', verificationToken, { exp: "10m" });
+        res.status(201).json({ 
+            message: `Welcome ${user.name}, your are ${user.role.name}`,
+        });
+        
+
+    }else{
+        res.status(401).json({ message: 'Info Invalide' });
+    }
 } 
 
 const emailVerification = async(req, res) => {
