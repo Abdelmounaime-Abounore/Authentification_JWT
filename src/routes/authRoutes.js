@@ -5,10 +5,10 @@ const authController = require('../controllers/authContoller')
 
 router.post("/register", authController.register)
 router.post("/login", authController.login)
-router.get("/verify/:token", authController.emailVerification)
-router.post("/logout", authController.logout)
+// router.get("/verify/:token", authController.emailVerification)
+// router.post("/logout", authController.logout)
 router.post('/forgot-password', authController.forgetPassword);
-router.post('/reset-password/:token', authController.resetPassword);
-router.post('/edit-password', authController.editPassword);
+// router.post('/reset-password/:token', authController.resetPassword);
+// router.post('/edit-password', authController.editPassword);
 
 module.exports = router

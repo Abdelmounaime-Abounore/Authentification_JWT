@@ -1,11 +1,10 @@
 const User = require('../models/user')
 const Role = require('../models/role')
 const mongoose = require("mongoose")
-const roleId = "652e4b682547cf7e2afe4045"
 const {jwtToken} = require('../utils/jwtToken')
 const cookie = require('cookie-parser');
 const jwt = require ('jsonwebtoken')
-const sendEmail = require("../utils/sendEmail")
+const sendEmail = require("../../utils/sendEmail")
 
 const register = async (req, res) => {
     try {
@@ -49,7 +48,7 @@ const login = async(req, res) => {
         const verificationToken = jwtToken.generate(user._id , '10m')
 
         if(!user.isVerified){
-            const verificationLink = `${process.env.BASE_URL}/api/auth/verify/${verificationToken}`;
+            const verificationLink = `${process.env.BASE_URL}/api/auth/${user.role.name}/verify/${verificationToken}`;
             await sendEmail.sendEmail(user.email, "Email Verification", verificationLink);
             res.json({ message : "please check your email "})
         }
@@ -98,14 +97,14 @@ const forgetPassword = async (req, res) => {
     const {email} = req.body
 
     try {
-        const user = await User.findOne({email})
+        const user = await User.findOne({email}).populate('role')
         if(!user){
             return res.status(404).json({ message: 'User not found.' });
         }
 
         const resetToken = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '10m'})
 
-        const resetLink = `${process.env.BASE_URL}/api/auth/reset-password/${resetToken}`;
+        const resetLink = `${process.env.BASE_URL}/api/auth/${user.role.name}/reset-password/${resetToken}`; 
         await sendEmail.sendEmail(user.email, 'Password Reset', resetLink);
 
         res.json({ message: 'Password reset link sent successfully.' });
@@ -129,7 +128,7 @@ const resetPassword = async (req, res) => {
             await user.save()
             res.status(201).json({ message: 'Password is reset successfully.' });
         }else{
-            return res.status(400).json({ message: 'Invalid or expired token.' });
+            return res.status(400).json({ message: 'Invalid token.' });
         }
 
     } catch (error) {
