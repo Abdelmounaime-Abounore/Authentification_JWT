@@ -1,7 +1,7 @@
 const User = require('../models/user')
 const Role = require('../models/role')
 const mongoose = require("mongoose")
-const {jwtToken} = require('../utils/jwtToken')
+const {jwtToken} = require('../../utils/jwtToken')
 const cookie = require('cookie-parser');
 const jwt = require ('jsonwebtoken')
 const sendEmail = require("../../utils/sendEmail")
@@ -45,7 +45,7 @@ const login = async(req, res) => {
 
     if(user && password == user.password)
     {
-        const verificationToken = jwtToken.generate(user._id , '10m')
+        const verificationToken = jwtToken.generate(user._id , '30m')
 
         if(!user.isVerified){
             const verificationLink = `${process.env.BASE_URL}/api/auth/${user.role.name}/verify/${verificationToken}`;
@@ -53,7 +53,7 @@ const login = async(req, res) => {
             res.json({ message : "please check your email "})
         }
 
-        res.cookie('jwtToken', verificationToken, { exp: "10m" });
+        res.cookie('jwtToken', verificationToken, { exp: "30m" });
         res.status(201).json({ 
             message: `Welcome ${user.name}, your are ${user.role.name}`,
         });
