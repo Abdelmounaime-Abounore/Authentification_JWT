@@ -48,7 +48,7 @@ const login = async(req, res) => {
         const verificationToken = jwtToken.generate(user._id , '30m')
 
         if(!user.isVerified){
-            const verificationLink = `${process.env.BASE_URL}/api/auth/${user.role.name}/verify/${verificationToken}`;
+            const verificationLink = `${process.env.BASE_URL}:5173/${user.role.name}/email-verify/${verificationToken}`;
             await sendEmail.sendEmail(user.email, "Email Verification", verificationLink);
             res.json({ message : "please check your email "})
         }
