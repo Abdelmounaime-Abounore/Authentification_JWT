@@ -46,21 +46,22 @@ const login = async(req, res) => {
     if(user && password == user.password)
     {
         const verificationToken = jwtToken.generate(user._id , '30m')
+        const tokenSended = verificationToken.replace(/\./g, '-')
 
         if(!user.isVerified){
-            const verificationLink = `${process.env.BASE_URL}:5173/${user.role.name}/email-verify/${verificationToken}`;
+            const verificationLink = `http://localhost:5173/client/email-verify?token=${tokenSended}`;
             await sendEmail.sendEmail(user.email, "Email Verification", verificationLink);
-            res.json({ message : "please check your email "})
+            return res.json({ message : "please check your email "})
         }
 
         res.cookie('jwtToken', verificationToken, { exp: "30m" });
-        res.status(201).json({ 
+        return res.status(201).json({ 
             message: `Welcome ${user.name}, your are ${user.role.name}`,
         });
         
 
     }else{
-        res.status(401).json({ message: 'Info Invalide' });
+        return res.status(401).json({ message: 'Info Invalide' });
     }
 } 
 
