@@ -49,7 +49,7 @@ const login = async(req, res) => {
         const tokenSended = verificationToken.replace(/\./g, '-')
 
         if(!user.isVerified){
-            const verificationLink = `http://localhost:5173/client/email-verify?token=${tokenSended}`;
+            const verificationLink = `http://localhost:5173/email-verify?role=${user.role.name}&token=${tokenSended}`;
             await sendEmail.sendEmail(user.email, "Email Verification", verificationLink);
             return res.json({ message : "please check your email "})
         }
@@ -60,7 +60,7 @@ const login = async(req, res) => {
         });
         
 
-    }else{
+    }else{ 
         return res.status(401).json({ message: 'Info Invalide' });
     }
 } 

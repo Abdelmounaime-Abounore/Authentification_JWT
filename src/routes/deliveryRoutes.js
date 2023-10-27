@@ -3,7 +3,9 @@ const router = express.Router();
 
 const authController = require('../controllers/authContoller')
 
-router.get("/livreur/verify/:token", authController.emailVerification)
-router.post("/livreur/logout", authController.logout)
-router.post('/livreur/reset-password/:token', authController.resetPassword);
-router.post('/livreur/edit-password', authController.editPassword);
+router.get("/verify/:role/:token", authController.emailVerification)
+router.post("/logout", authController.logout)
+router.post('/reset-password/:token', authController.resetPassword);
+router.post('/edit-password', authController.editPassword);
+
+module.exports = router

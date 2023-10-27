@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const authRoutes = require("./routes/authRoutes")
 const clientRoutes  = require('./routes/clientRoutes')
+const deliveryRoutes = require('./routes/deliveryRoutes')
 
 
 const app = express()
@@ -17,7 +18,8 @@ dotenv.config()
 app.use(cors())
 
 app.use("/api/auth", authRoutes);
-app.use("/api/auth/client", clientRoutes);
+app.use("/api/auth", clientRoutes);
+app.use("/api/auth", deliveryRoutes);
 
 const PORT = process.env.PORT
 db()
