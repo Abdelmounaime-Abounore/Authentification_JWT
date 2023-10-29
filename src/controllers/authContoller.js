@@ -57,11 +57,15 @@ const login = async(req, res) => {
         res.cookie('jwtToken', verificationToken, { exp: "30m" });
         return res.status(201).json({ 
             message: `Welcome ${user.name}, your are ${user.role.name}`,
+            user: {
+                name: user.name,
+                role: user.role.name,
+            },
         });
         
 
     }else{ 
-        return res.status(400).json({ message: 'data Invalide' });
+        return res.status(400).json({ message: 'Info Invalide' });
     }
 } 
 
