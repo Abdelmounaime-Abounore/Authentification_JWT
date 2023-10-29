@@ -42,7 +42,7 @@ const login = async(req, res) => {
     const {email , password} = req.body;
 
     const user = await User.findOne({email}).populate('role')
-
+    
     if(user && password == user.password)
     {
         const verificationToken = jwtToken.generate(user._id , '30m')
@@ -51,7 +51,9 @@ const login = async(req, res) => {
         if(!user.isVerified){
             const verificationLink = `http://localhost:5173/email-verify?role=${user.role.name}&token=${tokenSended}`;
             await sendEmail.sendEmail(user.email, "Email Verification", verificationLink);
-            return res.json({ message : "please check your email "})
+            return res.json({
+                verificationMessage: "Please check your email for verification instructions.",
+            });
         }
 
         res.cookie('jwtToken', verificationToken, { exp: "30m" });
