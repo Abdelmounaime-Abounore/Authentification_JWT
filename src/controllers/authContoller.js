@@ -42,7 +42,7 @@ const login = async(req, res) => {
     const {email , password} = req.body;
 
     const user = await User.findOne({email}).populate('role')
-    
+
     if(user && password == user.password)
     {
         const verificationToken = jwtToken.generate(user._id , '30m')
