@@ -51,14 +51,13 @@ const login = async(req, res) => {
         if(!user.isVerified){
             const verificationLink = `http://localhost:5173/email-verify?role=${user.role.name}&token=${tokenSended}`;
             await sendEmail.sendEmail(user.email, "Email Verification", verificationLink);
-            // res.header('Authorization', 'Bearer '+ verificationToken);
             return res.json({
                 verificationMessage: "Please check your email for verification instructions.",
             });
         }
 
          res.cookie('jwtToken', verificationToken, { exp: "30m" });
-        return res.status(201).json({ 
+            return res.status(201).json({ 
             message: `Welcome ${user.name}, your are ${user.role.name}`,
             user: {
                 name: user.name,
@@ -98,8 +97,12 @@ const emailVerification = async(req, res) => {
 }
 
 const logout = async(req, res) => {
-    res.clearCookie('jwtToken'); 
-    res.json({ message: 'Logged out successfully' });
+    try {
+        res.clearCookie('jwtToken');
+        res.json({ message: 'Logged out successfully' });
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 const forgetPassword = async (req, res) => {

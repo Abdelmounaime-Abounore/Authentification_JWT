@@ -6,7 +6,7 @@ const checkAuth = require('../Midelwears/authMidelwear')
 const authController = require('../controllers/authContoller')
 
 router.get("/verify/:role/:token", authController.emailVerification)
-router.post("/logout", authController.logout) // add midleware
+// router.post("/logout", authController.logout) // add midleware
 router.post('/reset-password/:token', authController.resetPassword);
 router.post('/edit-password', checkAuth, authController.editPassword); 
 
