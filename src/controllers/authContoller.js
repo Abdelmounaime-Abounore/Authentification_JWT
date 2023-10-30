@@ -151,11 +151,11 @@ const resetPassword = async (req, res) => {
 }
 
 const editPassword = async (req, res) => {
-
     try {
-        const token = req.cookies.jwtToken;
+        const token = req.params.token;
+        console.log(token, "hhhhh");
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
-
+  
         if (!decodedToken.id) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
