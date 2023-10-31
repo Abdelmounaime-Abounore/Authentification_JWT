@@ -116,7 +116,7 @@ const forgetPassword = async (req, res) => {
 
         const resetToken = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '10m'})
 
-        const resetLink = `${process.env.BASE_URL}/api/auth/${user.role.name}/reset-password/${resetToken}`; 
+        const resetLink = `http://localhost:5173/reset-password?token=${resetToken}`; 
         await sendEmail.sendEmail(user.email, 'Password Reset', resetLink);
 
         res.json({ message: 'Password reset link sent successfully.' });
@@ -130,11 +130,12 @@ const forgetPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
     const {token} = req.params;
-    const {password} = req.body
+    const password  = req.body.password;
 
     try {
         const decodedToken = jwtToken.verify(token, process.env.JWT_SECRET)
         if (decodedToken.id) {
+            console.log('hhhhh1')
             const user = await User.findById(decodedToken.id)
             user.password = password
             await user.save()
