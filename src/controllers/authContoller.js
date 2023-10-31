@@ -49,7 +49,7 @@ const login = async(req, res) => {
         const tokenSended = verificationToken.replace(/\./g, '-')
 
         if(!user.isVerified){
-            const verificationLink = `http://localhost:5173/email-verify?role=${user.role.name}&token=${tokenSended}`;
+            const verificationLink = `http://localhost:3000/email-verify?role=${user.role.name}&token=${tokenSended}`;
             await sendEmail.sendEmail(user.email, "Email Verification", verificationLink);
             return res.json({
                 verificationMessage: "Please check your email for verification instructions.",
